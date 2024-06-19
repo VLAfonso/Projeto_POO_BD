@@ -3,6 +3,7 @@ package Supermercado;
 import DAO.ProdutoDAO;
 
 public class Produto implements Comparable<Produto>{
+    //Atributos do produto
     private String nome;
     private String codBarras;
     private int codInterno;

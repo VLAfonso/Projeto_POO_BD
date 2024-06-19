@@ -3,6 +3,7 @@ package Supermercado;
 import DAO.SetorDAO;
 
 public class Setor {
+    //Atributos setor
     private int id;
     private String nome;
 

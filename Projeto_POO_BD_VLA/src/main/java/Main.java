@@ -15,7 +15,7 @@ public class Main {
         ProdutoDAO produtoDAO = new ProdutoDAO();
         FornecedorDAO fornecedorDAO = new FornecedorDAO();
 
-        //Criar Arrays de cada elemento do supermercado
+        //Criar maps de cada elemento do supermercado
         Map<Integer, Funcionario> funcionarios;
         Map<Integer, Gerente> gerentes;
         Map<Integer, Produto> produtos;
@@ -34,6 +34,7 @@ public class Main {
         int opCadListAtAp; //opção para cadastrar e listar
         int opLeitura; //opção para leitura de id e registro
         int opProduto; //opção para tipo de cadastro de produto
+
         while (flagMenu) {
             System.out.println("----------------------------------------------");
             System.out.println("Bem-vindo ao menu do Supermercado!");
@@ -61,6 +62,7 @@ public class Main {
                         System.out.println("6- Sair do cadastro;");
                         opCadListAtAp = entrada.nextInt();
                         System.out.println("----------------------------------------------");
+
                         switch (opCadListAtAp) {
                             //Cadastrar funcionário
                             case (1):

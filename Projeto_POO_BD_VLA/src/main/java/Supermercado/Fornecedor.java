@@ -5,6 +5,7 @@ import DAO.FornecedorDAO;
 import java.util.ArrayList;
 
 public class Fornecedor {
+    //Atributos do fornecedor
     private String nome;
     private String empresa;
     private String telefone;
