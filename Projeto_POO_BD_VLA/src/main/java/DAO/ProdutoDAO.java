@@ -24,8 +24,8 @@ public class ProdutoDAO extends ConnectionDAO{
             pst.setString(2, produto.getNome());
             pst.setString(3, produto.getCodBarras());
             pst.setFloat(4, produto.getPreco());
-            pst.setInt(7, produto.getEstoque());
-            pst.setInt(8, produto.getSetor().getId());
+            pst.setInt(5, produto.getEstoque());
+            pst.setInt(6, produto.getSetor().getId());
             pst.execute();
             sucesso = true;
         } catch (SQLException exc) {
@@ -74,6 +74,30 @@ public class ProdutoDAO extends ConnectionDAO{
         try {
             pst = con.prepareStatement(sql);
             pst.setInt(1, quantidade);
+            pst.setInt(2, codInterno);
+            pst.execute();
+            sucesso = true;
+        } catch (SQLException ex) {
+            System.out.println("Erro = " + ex.getMessage());
+            sucesso = false;
+        } finally {
+            try {
+                con.close();
+                pst.close();
+            } catch (SQLException exc) {
+                System.out.println("Erro: " + exc.getMessage());
+            }
+        }
+        return sucesso;
+    }
+
+    //UPDATE setor
+    public boolean updateProdutoSetor(int codInterno, int idSetor) {
+        connectToDB();
+        String sql = "UPDATE Produto SET Setor_ID=? where CodigoInterno=?";
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, idSetor);
             pst.setInt(2, codInterno);
             pst.execute();
             sucesso = true;
@@ -143,6 +167,62 @@ public class ProdutoDAO extends ConnectionDAO{
             }
         }
         return produtos;
+    }
+
+    //Selecionar maior código interno
+    public int selectMaiorCodInternoProduto() {
+        connectToDB();
+        String sql = "SELECT MAX(CodigoInterno) FROM Produto";
+        int maiorCodInterno = 0;
+
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                maiorCodInterno = rs.getInt("MAX(CodigoInterno)");
+            }
+            sucesso = true;
+        } catch (SQLException e) {
+            System.out.println("Erro: " + e.getMessage());
+            sucesso = false;
+        } finally {
+            try {
+                con.close();
+                st.close();
+            } catch (SQLException e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+        }
+        return maiorCodInterno;
+    }
+
+    //Contabilizar quantidade de produtos
+    public int qtdProduto() {
+        connectToDB();
+        String sql = "SELECT COUNT(CodigoInterno) FROM Produto";
+        int qtdProdutos = 0;
+
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                qtdProdutos = rs.getInt("COUNT(CodigoInterno)");
+            }
+            sucesso = true;
+        } catch (SQLException e) {
+            System.out.println("Erro: " + e.getMessage());
+            sucesso = false;
+        } finally {
+            try {
+                con.close();
+                st.close();
+            } catch (SQLException e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+        }
+        return qtdProdutos;
     }
 }
 

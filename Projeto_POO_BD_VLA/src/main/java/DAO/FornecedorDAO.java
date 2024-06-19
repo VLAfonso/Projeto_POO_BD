@@ -41,6 +41,30 @@ public class FornecedorDAO extends ConnectionDAO{
         return sucesso;
     }
 
+    //UPDATE
+    public boolean updateFornecedorGerente(int idFornecedor, int registroGerente) {
+        connectToDB();
+        String sql = "UPDATE Fornecedor SET Gerente_Registro=? where ID=?";
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, registroGerente);
+            pst.setInt(2, idFornecedor);
+            pst.execute();
+            sucesso = true;
+        } catch (SQLException ex) {
+            System.out.println("Erro = " + ex.getMessage());
+            sucesso = false;
+        } finally {
+            try {
+                con.close();
+                pst.close();
+            } catch (SQLException exc) {
+                System.out.println("Erro: " + exc.getMessage());
+            }
+        }
+        return sucesso;
+    }
+
     //DELETE
     public boolean deleteFornecedor(int id) {
         connectToDB();
@@ -121,6 +145,34 @@ public class FornecedorDAO extends ConnectionDAO{
             }
         }
         return maiorID;
+    }
+
+    //Contabilizar quantidade de fornecedores
+    public int qtdFornecedor() {
+        connectToDB();
+        String sql = "SELECT COUNT(ID) FROM Fornecedor";
+        int qtdFornecedores = 0;
+
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                qtdFornecedores = rs.getInt("COUNT(ID)");
+            }
+            sucesso = true;
+        } catch (SQLException e) {
+            System.out.println("Erro: " + e.getMessage());
+            sucesso = false;
+        } finally {
+            try {
+                con.close();
+                st.close();
+            } catch (SQLException e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+        }
+        return qtdFornecedores;
     }
 
 }

@@ -12,13 +12,12 @@ public class Fornecedor {
     private int id;
     private Gerente gerente;
     private int registroGerente;
-    private ArrayList<Produto> produtos = new ArrayList<>();
 
     //Conectar fornecedor com o banco de dados
     FornecedorDAO fornecedorDAO = new FornecedorDAO();
 
     //Construtor do fornecedor
-    public Fornecedor(String nome, String empresa, String telefone, String email, int id, Gerente gerente) {
+    public Fornecedor(String nome, String empresa, String telefone, String email, Gerente gerente) {
         this.nome = nome;
         this.empresa = empresa;
         this.telefone = telefone;
@@ -32,18 +31,8 @@ public class Fornecedor {
         this.empresa = empresa;
         this.telefone = telefone;
         this.email = email;
-        this.id = fornecedorDAO.selectMaiorIdFornecedor()+1;
+        this.id = id;
         this.registroGerente = registroGerente;
-    }
-
-    //Adicionar produtos
-    public void adicionarProduto(Produto produto){
-        for (int i=0; i< produtos.size(); i++){
-            if(produtos.get(i) ==null){
-                produtos.set(i, produto);
-                break;
-            }
-        }
     }
 
     //Getters
@@ -73,9 +62,5 @@ public class Fornecedor {
 
     public int getRegistroGerente() {
         return registroGerente;
-    }
-
-    public ArrayList<Produto> getProdutos() {
-        return produtos;
     }
 }

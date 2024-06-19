@@ -11,7 +11,7 @@ public class Setor {
 
     //Construtor do setor
     public Setor(String nome) {
-        this.id = setorDAO.selectMaiorIdFuncionario()+1;
+        this.id = setorDAO.selectMaiorIdSetor()+1;
         this.nome = nome;
     }
     public Setor(int id, String nome) {

@@ -3,7 +3,8 @@ package DAO;
 import Supermercado.Funcionario;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FuncionarioDAO extends ConnectionDAO{
 
@@ -12,7 +13,6 @@ public class FuncionarioDAO extends ConnectionDAO{
 
     //INSERT
     public boolean insertFuncionario(Funcionario funcionario) {
-
         connectToDB();
 
         String sql = "INSERT INTO Funcionario (Registro, Nome, CPF, DataNascimento, Telefone, Email, Gerente_Registro, Setor_ID) values(?,?,?,?,?,?,?,?)";
@@ -42,14 +42,38 @@ public class FuncionarioDAO extends ConnectionDAO{
         return sucesso;
     }
 
-    //UPDATE
-    public boolean updateFuncionarioNome(int registro, String nome) {
+    //UPDATE gerente
+    public boolean updateFuncionarioGerente(int registroFuncionario, int registroGerente) {
         connectToDB();
-        String sql = "UPDATE Funcionario SET nome=? where registro=?";
+        String sql = "UPDATE Funcionario SET Gerente_Registro=? where Registro=?";
         try {
             pst = con.prepareStatement(sql);
-            pst.setString(1, nome);
-            pst.setInt(2, registro);
+            pst.setInt(1, registroGerente);
+            pst.setInt(2, registroFuncionario);
+            pst.execute();
+            sucesso = true;
+        } catch (SQLException ex) {
+            System.out.println("Erro = " + ex.getMessage());
+            sucesso = false;
+        } finally {
+            try {
+                con.close();
+                pst.close();
+            } catch (SQLException exc) {
+                System.out.println("Erro: " + exc.getMessage());
+            }
+        }
+        return sucesso;
+    }
+
+    //UPDATE setor
+    public boolean updateFuncionarioSetor(int registroFuncionario, int idSetor) {
+        connectToDB();
+        String sql = "UPDATE Funcionario SET Setor_ID=? where Registro=?";
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, idSetor);
+            pst.setInt(2, registroFuncionario);
             pst.execute();
             sucesso = true;
         } catch (SQLException ex) {
@@ -90,8 +114,8 @@ public class FuncionarioDAO extends ConnectionDAO{
     }
 
     //SELECT
-    public ArrayList<Funcionario> selectFuncionario() {
-        ArrayList<Funcionario> funcionarios = new ArrayList<>();
+    public Map<Integer, Funcionario> selectFuncionario() {
+        Map<Integer, Funcionario> funcionarios = new HashMap<>();
         connectToDB();
         String sql = "SELECT * FROM Funcionario";
 
@@ -101,9 +125,9 @@ public class FuncionarioDAO extends ConnectionDAO{
 
             while (rs.next()) {
 
-                Funcionario funcionarioAux = new Funcionario(rs.getString("Nome"), rs.getString("DataNascimento"), rs.getString("CPF"), rs.getInt("Registro"), rs.getString("Telefone"), rs.getString("Email"), rs.getInt("Setor_ID"), rs.getInt("Gerente_Registro"));
+                Funcionario funcionarioAux = new Funcionario(rs.getString("Nome"),rs.getString("DataNascimento"), rs.getString("CPF"), rs.getInt("Registro"), rs.getString("Telefone"), rs.getString("Email"), rs.getInt("Setor_ID"), rs.getInt("Gerente_Registro"));
 
-                funcionarios.add(funcionarioAux);
+                funcionarios.put(funcionarioAux.getRegistro(), funcionarioAux);
             }
             sucesso = true;
         } catch (SQLException e) {
@@ -146,5 +170,33 @@ public class FuncionarioDAO extends ConnectionDAO{
             }
         }
         return maiorRegistro;
+    }
+
+    //Contabilizar quantidade de funcionários
+    public int qtdFuncionario() {
+        connectToDB();
+        String sql = "SELECT COUNT(Registro) FROM Funcionario";
+        int qtdFuncionarios = 0;
+
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                qtdFuncionarios = rs.getInt("COUNT(Registro)");
+            }
+            sucesso = true;
+        } catch (SQLException e) {
+            System.out.println("Erro: " + e.getMessage());
+            sucesso = false;
+        } finally {
+            try {
+                con.close();
+                st.close();
+            } catch (SQLException e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+        }
+        return qtdFuncionarios;
     }
 }

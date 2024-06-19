@@ -1,5 +1,7 @@
 package Supermercado;
 
+import DAO.ProdutoDAO;
+
 public class Produto implements Comparable<Produto>{
     private String nome;
     private String codBarras;
@@ -9,6 +11,9 @@ public class Produto implements Comparable<Produto>{
     private Setor setor;
     private int idSetor;
 
+    //Conectar com o produto do banco de dados
+    ProdutoDAO produtoDAO = new ProdutoDAO();
+
     //Ordenar os produto em relação a quantidade no estoque
     @Override
     public int compareTo(Produto o) {
@@ -16,10 +21,10 @@ public class Produto implements Comparable<Produto>{
     }
 
     //Construtor do produto
-    public Produto(String nome, String codBarras, int codInterno, float preco, int estoque, Setor setor) {
+    public Produto(String nome, String codBarras, float preco, int estoque, Setor setor) {
         this.nome = nome;
         this.codBarras = codBarras;
-        this.codInterno = codInterno;
+        this.codInterno = produtoDAO.selectMaiorCodInternoProduto()+1;
         this.preco = preco;
         this.estoque = estoque;
         this.setor = setor;

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class GerenteDAO extends ConnectionDAO{
     //DAO - Data Access Object
@@ -44,13 +45,13 @@ public class GerenteDAO extends ConnectionDAO{
     }
 
     //UPDATE
-    public boolean updateGerenteNome(int registro, String nome) {
+    public boolean updateGerenteSetor(int registroGerente, int idSetor) {
         connectToDB();
-        String sql = "UPDATE Gerente SET nome=? where registro=?";
+        String sql = "UPDATE Gerente SET Setor_ID=? where Registro=?";
         try {
             pst = con.prepareStatement(sql);
-            pst.setString(1, nome);
-            pst.setInt(2, registro);
+            pst.setInt(1, idSetor);
+            pst.setInt(2, registroGerente);
             pst.execute();
             sucesso = true;
         } catch (SQLException ex) {
@@ -150,6 +151,41 @@ public class GerenteDAO extends ConnectionDAO{
         return nome;
     }
 
+    //Verificar se há um gerente responsável pelo setor
+    public boolean selectSetorGerente(int idSetor) {
+        boolean haGerente = false;
+        String nomeSetor = "";
+        connectToDB();
+        String sql = "SELECT * FROM Gerente WHERE Setor_ID = "+idSetor;
+
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            while (rs.next()){
+                nomeSetor = rs.getString("Setor_ID");
+
+            }
+
+            if (!Objects.equals(nomeSetor, "")) {
+                haGerente = true;
+            }
+
+            sucesso = true;
+        } catch (SQLException e) {
+            System.out.println("Erro: " + e.getMessage());
+            sucesso = false;
+        } finally {
+            try {
+                con.close();
+                st.close();
+            } catch (SQLException e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+        }
+        return haGerente;
+    }
+
     //Selecionar maior registro
     public int selectMaiorRegistroGerente() {
         connectToDB();
@@ -176,5 +212,33 @@ public class GerenteDAO extends ConnectionDAO{
             }
         }
         return maiorRegistro;
+    }
+
+    //Contabilizar quantidade de gerentes
+    public int qtdGerente() {
+        connectToDB();
+        String sql = "SELECT COUNT(Registro) FROM Gerente";
+        int qtdGerentes = 0;
+
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                qtdGerentes = rs.getInt("COUNT(Registro)");
+            }
+            sucesso = true;
+        } catch (SQLException e) {
+            System.out.println("Erro: " + e.getMessage());
+            sucesso = false;
+        } finally {
+            try {
+                con.close();
+                st.close();
+            } catch (SQLException e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+        }
+        return qtdGerentes;
     }
 }
